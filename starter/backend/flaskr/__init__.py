@@ -104,7 +104,7 @@ def create_app(test_config=None):
                 'status_message': 'OK',
                 'questions': current_questions,
                 'total_questions': len(questions),
-                'current_category': [question['category'] for question in current_questions],
+                'current_category': [question['category'] for question in current_questions],  # noqa
                 'categories': categories_type,
                 'categories_id': categories_id
             })
@@ -195,7 +195,7 @@ def create_app(test_config=None):
                     'status_message': 'OK',
                     'questions': current_questions,
                     'total_questions': len(questions),
-                    'current_category': [question['category'] for question in current_questions],
+                    'current_category': [question['category'] for question in current_questions],  # noqa
                     'categories': categories
                 })
             except BaseException:
@@ -220,7 +220,7 @@ def create_app(test_config=None):
 
         try:
             questions = Question.query.filter(Question.question.
-                                              like(phrase)).\
+                                              ilike(phrase)).\
                                               order_by(Question.id).all()
             current_questions = paginate_questions(request, questions)
 
@@ -230,14 +230,14 @@ def create_app(test_config=None):
 
             if len(current_questions) == 0:
                 abort(404)
-
+            
             return jsonify({
                 'success': True,
                 'status_code': 200,
                 'status_message': 'OK',
                 'questions': current_questions,
                 'total_questions': len(questions),
-                'current_category': [question['category'] for question in current_questions],
+                'current_category': [question['category'] for question in current_questions],  # noqa
                 'categories': categories_type,
                 'categories_id': categories_id
             })
@@ -275,7 +275,7 @@ def create_app(test_config=None):
                 'status_message': 'OK',
                 'questions': current_questions,
                 'total_questions': len(questions),
-                'current_category': [question['category'] for question in current_questions],
+                'current_category': [question['category'] for question in current_questions],  # noqa
                 'categories': categories_type,
                 'categories_id': categories_id
             })
