@@ -98,7 +98,7 @@ def create_app(test_config=None):
 
             if len(current_questions) == 0:
                 abort(404)
-    
+
             return jsonify({
                 'success': True,
                 'status_code': 200,
