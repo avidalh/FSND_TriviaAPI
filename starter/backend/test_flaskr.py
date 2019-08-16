@@ -16,7 +16,7 @@ class TriviaTestCase(unittest.TestCase):
         self.client = self.app.test_client
         self.database_name = "trivia_test"
         self.database_path = "postgres://{}/{}".format('localhost:5432',
-            self.database_name)
+                                                       self.database_name)
         setup_db(self.app, self.database_path)
 
         # binds the app to the current context
@@ -25,7 +25,7 @@ class TriviaTestCase(unittest.TestCase):
             self.db.init_app(self.app)
             # create all tables
             self.db.create_all()
-    
+
     def tearDown(self):
         """Executed after reach test"""
         pass
@@ -49,7 +49,6 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data['categories'])
         self.assertTrue(data['total_categories'])
 
-
     def test_retrieve_questions(self):
         """
         get questions endpoint test function
@@ -64,13 +63,12 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data['total_questions'])
         self.assertTrue(data['current_category'])
         self.assertTrue(data['categories'])
-    
 
     def test_retrieve_questions_422(self):
         """
         get questions endpoint error test function
         """
-        
+
         response = self.client().get('/questions?page=5000')
         data = json.loads(response.data)
 
@@ -79,19 +77,17 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['message'], 'Unprocessable')
         self.assertTrue(data['error'], 422)
 
-
     def test_delete_questions_422(self):
         """
         delete questions endpoint error test function
         """
         response = self.client().delete('questions/5000')
         data = json.loads(response.data)
-    
+
         self.assertEqual(data['success'], False)
         self.assertEqual(response.status_code, 422)
         self.assertEqual(data['message'], 'Unprocessable')
         self.assertTrue(data['error'], 422)
-
 
     def test_delete_questions(self):
         """
@@ -99,21 +95,20 @@ class TriviaTestCase(unittest.TestCase):
         """
         response = self.client().delete('questions/6')
         data = json.loads(response.data)
-    
+
         self.assertEqual(data['success'], True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data['status_message'], 'OK')
-
 
     def test_create_question(self):
         """
         questions creation endpoint test function
         """
         new_question = {
-            'question':'test question',
-            'answer':'test_answer',
+            'question': 'test question',
+            'answer': 'test_answer',
             'category': 1,
-            'difficulty':'1'
+            'difficulty': '1'
         }
         response = self.client().post('/questions', json=new_question)
         data = json.loads(response.data)
@@ -122,25 +117,23 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertEqual(data['status_message'], 'OK')
 
-
     def test_create_question_422(self):
         """
         questions creation endpoint error test function
         """
         new_question = {
-            'question':'',
-            'answer':'',
+            'question': '',
+            'answer': '',
             'category': 1,
-            'difficulty':''
+            'difficulty': ''
         }
         response = self.client().post('/questions', json=new_question)
         data = json.loads(response.data)
-    
+
         self.assertEqual(response.status_code, 422)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'Unprocessable')
 
-    
     def test_questions_by_cat(self):
         """
         get questions by category endpoint test function
@@ -152,7 +145,6 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertEqual(data['status_message'], 'OK')
 
-        
     def test_questions_by_cat_422(self):
         """
         get questions by category error endpoint test function
@@ -164,13 +156,12 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'Unprocessable')
 
-
     def test_questions_search(self):
         """
         questions search endpoint test function
         """
         response = self.client().post('/questions_by_phrase',
-            json={'searchTerm':"did"})
+                                      json={'searchTerm': "did"})
 
         data = json.loads(response.data)
 
@@ -178,13 +169,12 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertEqual(data['status_message'], 'OK')
 
-    
     def test_questions_search_400(self):
         """
         questions search endpoint error test function
         """
         response = self.client().post('/questions_by_phrase',
-            json={'searchTerm':"abcdefghijklmnopqrstuvwxyz"})
+                                      json={'searchTerm': "abcdefghijklmn"})
 
         data = json.loads(response.data)
 
@@ -192,37 +182,36 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'Bad Request')
 
-
     def test_play_quizz(self):
         """
         play quizz endpoint test function
         """
         response = self.client().post('/quizzes',
-            json={'previous_questions': [],
-                  'quiz_category': {'type': 'History',
-                                    'id': '3'
-                                    }
-                })
+                                      json={'previous_questions': [],
+                                            'quiz_category': {'type': 'History',  # noqa
+                                                              'id': '3'
+                                                              }
+                                            })
         data = json.loads(response.data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertEqual(data['status_message'], 'OK')
-
 
     def test_play_quizz_404(self):
         """
         play quizz endpoint error test function
         """
         response = self.client().post('/quizzes',
-            json={'previous_questions': [],
-                  'quiz_category': {'type': 'abcdefg',
-                                    'id': '9999'
-                                    }
-                })
+                                      json={'previous_questions': [],
+                                            'quiz_category': {'type': 'abcde',
+                                                              'id': '9999'
+                                                              }
+                                            })
         data = json.loads(response.data)
         self.assertEqual(response.status_code, 404)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'Resource Not found')
+
 
 # Make the tests conveniently executable
 if __name__ == "__main__":
