@@ -53,12 +53,14 @@ def create_app(test_config=None):
     '''
     @app.route('/categories')
     def retrieve_categories():
-        # try:
+        try:
             categories = Category.query.order_by(Category.id).all()
             categories_type = [category.type for category in categories]
             categories_id = [category.id for category in categories]
+
             if len(categories) == 0:
                 abort(404)
+
             else:
                 return jsonify({
                     'success': True,
@@ -68,9 +70,8 @@ def create_app(test_config=None):
                     'categories_id': categories_id,
                     'total_categories': len(categories)
                 })
-
-        # except BaseException:
-        #     abort(422)
+        except Exception:
+            abort(422)
 
     '''
     @TODO:
@@ -97,18 +98,19 @@ def create_app(test_config=None):
 
             if len(current_questions) == 0:
                 abort(404)
-
+    
             return jsonify({
                 'success': True,
                 'status_code': 200,
                 'status_message': 'OK',
                 'questions': current_questions,
                 'total_questions': len(questions),
-                'current_category': [question['category'] for question in current_questions],  # noqa
+                'current_category': list(set([question['category'] for question in current_questions])),  # noqa
                 'categories': categories_type,
                 'categories_id': categories_id
             })
-        except BaseException:
+
+        except Exception:
             abort(422)
 
     '''
@@ -140,7 +142,8 @@ def create_app(test_config=None):
                 'questions': current_questions,
                 'total_questions': len(questions)
             })
-        except BaseException:
+
+        except Exception:
             abort(422)
 
     '''
@@ -195,10 +198,11 @@ def create_app(test_config=None):
                     'status_message': 'OK',
                     'questions': current_questions,
                     'total_questions': len(questions),
-                    'current_category': [question['category'] for question in current_questions],  # noqa
+                    'current_category': list(set([question['category'] for question in current_questions])),  # noqa
                     'categories': categories
                 })
-            except BaseException:
+
+            except Exception:
                 abort(422)
         else:
             abort(422)
@@ -225,24 +229,22 @@ def create_app(test_config=None):
             current_questions = paginate_questions(request, questions)
 
             categories = Category.query.order_by(Category.id).all()
-            categories_type = [category.type for category in categories]
-            categories_id = [category.id for category in categories]
+            categories = [category.type for category in categories]
 
             if len(current_questions) == 0:
                 abort(404)
-            
+
             return jsonify({
                 'success': True,
                 'status_code': 200,
                 'status_message': 'OK',
                 'questions': current_questions,
                 'total_questions': len(questions),
-                'current_category': [question['category'] for question in current_questions],  # noqa
-                'categories': categories_type,
-                'categories_id': categories_id
+                'current_category': list(set([question['category'] for question in current_questions])),  # noqa
+                'categories': categories
             })
 
-        except BaseException:
+        except Exception:
             abort(400)
 
     '''
@@ -263,8 +265,8 @@ def create_app(test_config=None):
 
             categories = Category.query.filter(Category.id == category_id).\
                 order_by(Category.id).all()
-            categories_type = [category.type for category in categories]
-            categories_id = [category.id for category in categories]
+            categories = [category.type for category in categories]
+            # categories_id = [category.id for category in categories]
 
             if len(current_questions) == 0:
                 abort(404)
@@ -275,12 +277,12 @@ def create_app(test_config=None):
                 'status_message': 'OK',
                 'questions': current_questions,
                 'total_questions': len(questions),
-                'current_category': [question['category'] for question in current_questions],  # noqa
-                'categories': categories_type,
-                'categories_id': categories_id
+                'current_category': list(set([question['category'] for question in current_questions])),  # noqa
+                'categories': categories
+                # 'categories_id': categories_id
             })
 
-        except BaseException:
+        except Exception:
             abort(422)
 
     '''
@@ -329,7 +331,8 @@ def create_app(test_config=None):
                 'status_message': 'OK',
                 'question': current_question
             })
-        except BaseException:
+
+        except Exception:
             abort(400)
 
     '''

@@ -66,29 +66,243 @@ One note before you delve into your tasks: for each endpoint you are expected to
 8. Create a POST endpoint to get questions to play the quiz. This endpoint should take category and previous question parameters and return a random questions within the given category, if provided, and that is not one of the previous questions. 
 9. Create error handlers for all expected errors including 400, 404, 422 and 500. 
 
-REVIEW_COMMENT
-```
-This README is missing documentation of your endpoints. Below is an example for your endpoint to get all categories. Please use it as a reference for creating your documentation and resubmit your code. 
+----
 
-Endpoints
-GET '/categories'
-GET ...
-POST ...
-DELETE ...
+## Endpoints documentation
 
-GET '/categories'
+<!-- REVIEW_COMMENT -->
+<!-- ``` -->
+<!-- This README is missing documentation of your endpoints. Below is an example for your endpoint to get all categories. Please use it as a reference for creating your documentation and resubmit your code.  -->
+
+Documentation of the available application's endpoints.
+
+#### `GET '/categories'`
 - Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
 - Request Arguments: None
-- Returns: An object with a single key, categories, that contains a object of id: category_string key:value pairs. 
-{'1' : "Science",
-'2' : "Art",
-'3' : "Geography",
-'4' : "History",
-'5' : "Entertainment",
-'6' : "Sports"}
+- Returns: A multiple key/value pairs object with the following structure:
+    - `success`: can take values `True` or `False` deppending on the successfullnes of the endpoint's execution.
+    - `status_code`: contains the response status code.
+    - `status_message`: contains the a message related with the staus of the reponse, i.e: `error` and `OK`.
+    - `categories`: the list of categories available in the database.
+    - `categories_id`: list of the categories id.
+    - `total_categories`: the number of questions returned.
+    
+```nix
+{'success': True,
+'status_code': 200,
+'status_message': 'OK',
+'categories': ['Science', 'Art', 'Geography', 'History', 'Entertainment', 'Sports'],
+'categories_id': [1, 2, 3, 4, 5, 6],
+'total_categories': 6}
+```
+
+#### `GET '/questions'`
+- Fetches a dictionary of quetions.
+- Request Arguments: Page's number (optional)
+- Returns: A multiple key/value pairs object with the following structure:
+    - `success`: can take values `True` or `False` deppending on the successfullnes of the endpoint's execution.
+    - `status_code`: contains the response status code.
+    - `status_message`: contains the a message related with the staus of the reponse, i.e: `error` and `OK`.
+    - `questions`: contains a list of the fetched questions. Each question is a key/value pairs object containing `id`,  `question`, `category` and  `diffficulty`.
+    - `total_questions`: the number of questions returned.
+    - `current_category`: list of the categories of the returned questions list.
+    - `categories`: the list of categories available in the database.
+
+Here is an example of the returned object:
+
+```nix
+{'success': True,
+'status_code': 200,
+'status_message': 'OK',
+'questions': [{'id': 17,
+               'question': 'La Giaconda is better known as what?',
+               'answer': 'Mona Lisa',
+               'category': 2,
+               'difficulty': 3},
+               {...}, ...
+             ],
+'total_questions': 16,
+'current_category': [5, 4, 6, 3, 2],
+'categories': ['Science', 'Art', 'Geography', 'History', 'Entertainment', 'Sports'],
+'categories_id': [1, 2, 3, 4, 5, 6]}
+```
+
+#### `DELETE '/questions/<int:question_id>'`
+- Deletes the question selectecd by `question_id`.
+- Request Arguments: `question_id` (required)
+- Returns: A multiple key/value pairs object with the following structure:
+    - `success`: can take values `True` or `False` deppending on the successfullnes of the endpoint's execution.
+    - `status_code`: contains the response status code.
+    - `status_message`: contains the a message related with the staus of the reponse, i.e: `error` and `OK`.
+    - `questions`: contains a list of the fetched questions. Each question is a key/value pairs object containing `id`,  `question`, `category` and  `diffficulty`.
+    - `total_questions`: the number of questions returned.
+    - `current_category`: list of the categories of the returned questions list.
+    - `categories`: the list of categories available in the database.
+
+Here is an example of the returned object:
+
+```nix
+{'success': True,
+'status_code': 200,
+'status_message': 'OK',
+'questions': [{'id': 17,
+               'question': 'La Giaconda is better known as what?',
+               'answer': 'Mona Lisa',
+               'category': 2,
+               'difficulty': 3},
+               {...}, ...
+             ],
+'total_questions': 16,
+'current_category': [5, 4, 6, 3, 2],
+'categories': ['Science', 'Art', 'Geography', 'History', 'Entertainment', 'Sports'],
+'categories_id': [1, 2, 3, 4, 5, 6]}
+```
+
+#### `POST '/questions'`
+- Inserts a new question in the database.
+- Request Arguments: a key/value pairs object whit the following content:
+    - `question`: string containing the question itself.
+    - `answer`: answer's string.
+    - `difficulty`: difficulty level.
+    - `category`: category ID field.
+
+Example of the object:
+
+```nix
+{'question': 'Can birds fly?',
+'answer': 'It depends...',
+'difficulty': 1,
+'category': 1}
+```
+
+- Returns: A multiple key/value pairs object with the following structure:
+    - `success`: can take values `True` or `False` deppending on the successfullnes of the endpoint's execution.
+    - `status_code`: contains the response status code.
+    - `status_message`: contains the a message related with the staus of the reponse, i.e: `error` and `OK`.
+    - `questions`: contains a list of the fetched questions. Each question is a key/value pairs object containing `id`,  `question`, `category` and  `diffficulty`.
+    - `total_questions`: the number of questions returned.
+    - `current_category`: list of the categories of the returned questions list.
+    - `categories`: the list of categories available in the database.
+
+Here is an example of the returned object:
+
+```nix
+{'success': True,
+'status_code': 200,
+'status_message': 'OK',
+'questions': [{'id': 2,
+               'question': 'What movie earned Tom Hanks his third straight Oscar nomination, in 1996?',
+               'answer': 'Apollo 13',
+               'category': 5,
+               'difficulty': 4}, 
+               {...}...
+             ],
+'total_questions': 18,
+'current_category': [2, 3, 4, 5, 6],
+'categories': ['Science', 'Art', 'Geography', 'History', 'Entertainment', 'Sports']}
+```
+
+#### `POST '/questions_by_phrase'`
+- Returns a set of questions based on a search term.
+- Request Arguments: 
+    - `searchTerm`: string to search in questions string.
+- Returns: A multiple key/value pairs object with the following structure:
+    - `success`: can take values `True` or `False` deppending on the successfullnes of the endpoint's execution.
+    - `status_code`: contains the response status code.
+    - `status_message`: contains the a message related with the staus of the reponse, i.e: `error` and `OK`.
+    - `questions`: contains a list of the fetched questions. Each question is a key/value pairs object containing `id`,  `question`, `category` and  `diffficulty`.
+    - `total_questions`: the number of questions returned.
+    - `current_category`: list of the categories of the returned questions list.
+    - `categories`: the list of categories available in the database.
+
+Here is an example of the returned object:
+
+```nix
+{'success': True,
+'status_code': 200,
+'status_message': 'OK',
+'questions': [{'id': 2,
+               'question': 'What movie earned Tom Hanks his third straight Oscar nomination, in 1996?',
+               'answer': 'Apollo 13',
+               'category': 5,
+               'difficulty': 4}, 
+               {...}...
+             ],
+'total_questions': 18,
+'current_category': [2, 3, 4, 5, 6],
+'categories': ['Science', 'Art', 'Geography', 'History', 'Entertainment', 'Sports']}
+```
+
+#### `GET '/categories/<int:category_id>/questions'`
+- Returns a subset of questions that belongs to an specific category.
+- Request Arguments:
+    - `category_id`: category id field.
+- Returns: A multiple key/value pairs object with the following structure:
+    - `success`: can take values `True` or `False` deppending on the successfullnes of the endpoint's execution.
+    - `status_code`: contains the response status code.
+    - `status_message`: contains the a message related with the staus of the reponse, i.e: `error` and `OK`.
+    - `questions`: contains a list of the fetched questions. Each question is a key/value pairs object containing `id`,  `question`, `category` and  `diffficulty`.
+    - `total_questions`: the number of questions returned.
+    - `current_category`: list of the categories of the returned questions list.
+    - `categories`: the list of categories available in the database.
+
+Here is an example of the returned object:
+```nix
+{'success': True,
+'status_code': 200,
+'status_message': 'OK',
+'questions': [{'id': 10,
+               'question': 'Which is the only team to play in every soccer World Cup tournament?',
+               'answer': 'Brazil',
+               'category': 6,
+               'difficulty': 3},
+               {...}, ...
+             ],
+'total_questions': 2,
+'current_category': [6],
+'categories': ['Sports']
+}
+```
+
+
+#### `POST '/quizzes'`
+- Iteratively executes the game asking questions to player.
+- Request Arguments:
+    - `category_id`: question's category id field.
+    - `previous_quesion`: question in the previous iteration, first time it's an empty string.
+- Returns: A multiple key/value pairs object with the following content:
+    - `success`: can take values `True` or `False` deppending on the successfullnes of the endpoint's execution.
+    - `status_code`: contains the response status code.
+    - `status_message`: contains the a message related with the staus of the reponse, i.e: `error` and `OK`.
+    - `question`: contains the question. Question is a key/value pairs object containing `id`,  `question`, `answer`, `category` and  `diffficulty`.
+
+Here is an example of the returned object:
+```nix
+{'success': True,
+'status_code': 200,
+'status_message': 'OK',
+'question': {'id': 11,
+             'question': 'Which country won the first ever soccer World Cup in 1930?',
+             'answer': 'Uruguay',
+             'category': 6,
+             'difficulty': 4}
+}
 
 ```
 
+## Errors handling:
+All endpoints are provided with error handlers functions which return the following key/value pairs JSON content:
+- `success`: False.
+- `error`: error code number.
+- `message`: error message string giving a brief description of the kind of error.
+
+Here is an example of the returned object:
+
+```nix
+"success": False,
+"error": 404,
+"message": "Resource Not found"
+```
 
 ## Testing
 To run the tests, run
@@ -98,3 +312,5 @@ createdb trivia_test
 psql trivia_test < trivia.psql
 python test_flaskr.py
 ```
+
+To allow an easier and faster application testing, you can execute `test.sh` script. :)
