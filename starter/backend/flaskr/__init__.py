@@ -43,6 +43,7 @@ def create_app(test_config=None):
                              'Content-Type,Authorization,true')
         response.headers.add('Access-Control-Allow-Methods',
                              'GET,PUT,POST,DELETE,OPTIONS')
+        response.headers.add('Access-Control-Allow-Credentials', 'true')
         return response
 
     '''
@@ -52,9 +53,10 @@ def create_app(test_config=None):
     '''
     @app.route('/categories')
     def retrieve_categories():
-        try:
+        # try:
             categories = Category.query.order_by(Category.id).all()
-            categories = [category.type for category in categories]
+            categories_type = [category.type for category in categories]
+            categories_id = [category.id for category in categories]
             if len(categories) == 0:
                 abort(404)
             else:
@@ -62,12 +64,13 @@ def create_app(test_config=None):
                     'success': True,
                     'status_code': 200,
                     'status_message': 'OK',
-                    'categories': categories,
+                    'categories': categories_type,
+                    'categories_id': categories_id,
                     'total_categories': len(categories)
                 })
 
-        except BaseException:
-            abort(422)
+        # except BaseException:
+        #     abort(422)
 
     '''
     @TODO:
@@ -89,7 +92,8 @@ def create_app(test_config=None):
             current_questions = paginate_questions(request, questions)
 
             categories = Category.query.order_by(Category.id).all()
-            categories = [category.type for category in categories]
+            categories_type = [category.type for category in categories]
+            categories_id = [category.id for category in categories]
 
             if len(current_questions) == 0:
                 abort(404)
@@ -100,8 +104,9 @@ def create_app(test_config=None):
                 'status_message': 'OK',
                 'questions': current_questions,
                 'total_questions': len(questions),
-                'current_category': current_questions[0]['category'],
-                'categories': categories
+                'current_category': [question['category'] for question in current_questions],
+                'categories': categories_type,
+                'categories_id': categories_id
             })
         except BaseException:
             abort(422)
@@ -190,7 +195,7 @@ def create_app(test_config=None):
                     'status_message': 'OK',
                     'questions': current_questions,
                     'total_questions': len(questions),
-                    'current_category': current_questions[0]['category'],
+                    'current_category': [question['category'] for question in current_questions],
                     'categories': categories
                 })
             except BaseException:
@@ -219,6 +224,10 @@ def create_app(test_config=None):
                                               order_by(Question.id).all()
             current_questions = paginate_questions(request, questions)
 
+            categories = Category.query.order_by(Category.id).all()
+            categories_type = [category.type for category in categories]
+            categories_id = [category.id for category in categories]
+
             if len(current_questions) == 0:
                 abort(404)
 
@@ -226,9 +235,11 @@ def create_app(test_config=None):
                 'success': True,
                 'status_code': 200,
                 'status_message': 'OK',
-                'current_category': current_questions[0]['category'],
                 'questions': current_questions,
-                'total_questions': len(questions)
+                'total_questions': len(questions),
+                'current_category': [question['category'] for question in current_questions],
+                'categories': categories_type,
+                'categories_id': categories_id
             })
 
         except BaseException:
@@ -250,6 +261,11 @@ def create_app(test_config=None):
                                               order_by(Question.id).all()
             current_questions = paginate_questions(request, questions)
 
+            categories = Category.query.filter(Category.id == category_id).\
+                order_by(Category.id).all()
+            categories_type = [category.type for category in categories]
+            categories_id = [category.id for category in categories]
+
             if len(current_questions) == 0:
                 abort(404)
 
@@ -259,7 +275,9 @@ def create_app(test_config=None):
                 'status_message': 'OK',
                 'questions': current_questions,
                 'total_questions': len(questions),
-                'current_category': category_id
+                'current_category': [question['category'] for question in current_questions],
+                'categories': categories_type,
+                'categories_id': categories_id
             })
 
         except BaseException:
@@ -281,6 +299,7 @@ def create_app(test_config=None):
         body = request.get_json()
         category = body.get('quiz_category').get('id')
         prev_question = body.get('previous_questions')
+        category = int(category) + 1
 
         questions = Question.query.filter(Question.category == category).all()
         questions = [question.format() for question in questions]
