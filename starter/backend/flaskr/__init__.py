@@ -258,9 +258,10 @@ def create_app(test_config=None):
     @app.route('/categories/<int:category_id>/questions')
     def questions_by_cat(category_id):
         try:
-            questions = Question.query.filter(Question.category ==
-                                              category_id).\
-                                              order_by(Question.id).all()
+            # questions = Question.query.filter(Question.category ==
+            #                                   category_id).\
+            #                                   order_by(Question.id).all()
+            questions = Question.query.filter(Question.category == str(category_id)).order_by(Question.id).all()  # noqa
             current_questions = paginate_questions(request, questions)
 
             categories = Category.query.filter(Category.id == category_id).\
@@ -303,7 +304,8 @@ def create_app(test_config=None):
         prev_question = body.get('previous_questions')
         category = int(category) + 1
 
-        questions = Question.query.filter(Question.category == category).all()
+        questions = Question.query.filter(Question.category == str(category))\
+                                  .all()
         questions = [question.format() for question in questions]
         if len(questions) == 0:
             abort(404)
@@ -321,7 +323,11 @@ def create_app(test_config=None):
                     })
                 else:
                     if len(questions) > len(prev_question):
-                        current_question = random.choice(questions)
+                        # current_question = random.choice(questions)
+                        current_question = Question.query.filter(
+                            Question.category == str(category_id)).filter(
+                            ~Question.id.in_(previous_questions)).order_by(
+                            func.random()).first()
                     else:
                         keep_playing = False
 
