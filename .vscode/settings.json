@@ -1,3 +1,5 @@
 {
-    "python.pythonPath": "/Users/angelvidal/anaconda3/envs/fsnd/bin/python"
+    "python.pythonPath": "/Users/angelvidal/miniconda3/envs/fsnd/bin/python",
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true
 }

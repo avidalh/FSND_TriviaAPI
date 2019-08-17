@@ -83,17 +83,25 @@ Documentation of the available application's endpoints.
     - `success`: can take values `True` or `False` deppending on the successfullnes of the endpoint's execution.
     - `status_code`: contains the response status code.
     - `status_message`: contains the a message related with the staus of the reponse, i.e: `error` and `OK`.
-    - `categories`: the list of categories available in the database.
-    - `categories_id`: list of the categories id.
+    - `categories`: dictionary of categories available in the database.
     - `total_categories`: the number of questions returned.
     
-```nix
-{'success': True,
-'status_code': 200,
-'status_message': 'OK',
-'categories': ['Science', 'Art', 'Geography', 'History', 'Entertainment', 'Sports'],
-'categories_id': [1, 2, 3, 4, 5, 6],
-'total_categories': 6}
+```JSON
+{
+  "categories": {
+    "1": "Science", 
+    "2": "Art", 
+    "3": "Geography", 
+    "4": "History", 
+    "5": "Entertainment", 
+    "6": "Sports"
+  }, 
+  "status_code": 200, 
+  "status_message": "OK", 
+  "success": true, 
+  "total_categories": 6
+}
+
 ```
 
 #### `GET '/questions'`
@@ -106,25 +114,33 @@ Documentation of the available application's endpoints.
     - `questions`: contains a list of the fetched questions. Each question is a key/value pairs object containing `id`,  `question`, `category` and  `diffficulty`.
     - `total_questions`: the number of questions returned.
     - `current_category`: list of the categories of the returned questions list.
-    - `categories`: the list of categories available in the database.
+    - `categories`: dictionary of categories available in the database.
 
 Here is an example of the returned object:
 
-```nix
-{'success': True,
-'status_code': 200,
-'status_message': 'OK',
-'questions': [{'id': 17,
-               'question': 'La Giaconda is better known as what?',
-               'answer': 'Mona Lisa',
-               'category': 2,
-               'difficulty': 3},
-               {...}, ...
-             ],
-'total_questions': 16,
-'current_category': [5, 4, 6, 3, 2],
-'categories': ['Science', 'Art', 'Geography', 'History', 'Entertainment', 'Sports'],
-'categories_id': [1, 2, 3, 4, 5, 6]}
+```JSON
+{
+  "categories": {
+    "1": "Science"
+  }, 
+  "current_category": [
+    1
+  ], 
+  "questions": [
+    {
+      "answer": "The Liver", 
+      "category": 1, 
+      "difficulty": 4, 
+      "id": 20, 
+      "question": "What is the heaviest organ in the human body?"
+    }, 
+    {...}
+  ], 
+  "status_code": 200, 
+  "status_message": "OK", 
+  "success": true, 
+  "total_questions": 5
+}
 ```
 
 #### `DELETE '/questions/<int:question_id>'`
@@ -137,25 +153,42 @@ Here is an example of the returned object:
     - `questions`: contains a list of the fetched questions. Each question is a key/value pairs object containing `id`,  `question`, `category` and  `diffficulty`.
     - `total_questions`: the number of questions returned.
     - `current_category`: list of the categories of the returned questions list.
-    - `categories`: the list of categories available in the database.
+    - `categories`: dictionary of categories available in the database.
 
 Here is an example of the returned object:
 
-```nix
-{'success': True,
-'status_code': 200,
-'status_message': 'OK',
-'questions': [{'id': 17,
-               'question': 'La Giaconda is better known as what?',
-               'answer': 'Mona Lisa',
-               'category': 2,
-               'difficulty': 3},
-               {...}, ...
-             ],
-'total_questions': 16,
-'current_category': [5, 4, 6, 3, 2],
-'categories': ['Science', 'Art', 'Geography', 'History', 'Entertainment', 'Sports'],
-'categories_id': [1, 2, 3, 4, 5, 6]}
+```JSON
+{
+  "categories": {
+    "1": "Science", 
+    "2": "Art", 
+    "3": "Geography", 
+    "4": "History", 
+    "5": "Entertainment", 
+    "6": "Sports"
+  }, 
+  "current_category": [
+    2, 
+    3, 
+    4, 
+    5, 
+    6
+  ], 
+  "questions": [
+    {
+      "answer": "Apollo 13", 
+      "category": 5, 
+      "difficulty": 4, 
+      "id": 2, 
+      "question": "What movie earned Tom Hanks his third straight Oscar nomination, in 1996?"
+    }, 
+    {...}
+  ], 
+  "status_code": 200, 
+  "status_message": "OK", 
+  "success": true, 
+  "total_questions": 17
+}
 ```
 
 #### `POST '/questions'`
@@ -168,11 +201,13 @@ Here is an example of the returned object:
 
 Example of the object:
 
-```nix
-{'question': 'Can birds fly?',
-'answer': 'It depends...',
-'difficulty': 1,
-'category': 1}
+```JSON
+{
+    answer: "It depends"
+    category: 1
+    difficulty: 1
+    question: "Can birds fly?"
+}
 ```
 
 - Returns: A multiple key/value pairs object with the following structure:
@@ -182,24 +217,42 @@ Example of the object:
     - `questions`: contains a list of the fetched questions. Each question is a key/value pairs object containing `id`,  `question`, `category` and  `diffficulty`.
     - `total_questions`: the number of questions returned.
     - `current_category`: list of the categories of the returned questions list.
-    - `categories`: the list of categories available in the database.
+    - `categories`: dictionary of categories available in the database.
 
 Here is an example of the returned object:
 
-```nix
-{'success': True,
-'status_code': 200,
-'status_message': 'OK',
-'questions': [{'id': 2,
-               'question': 'What movie earned Tom Hanks his third straight Oscar nomination, in 1996?',
-               'answer': 'Apollo 13',
-               'category': 5,
-               'difficulty': 4}, 
-               {...}...
-             ],
-'total_questions': 18,
-'current_category': [2, 3, 4, 5, 6],
-'categories': ['Science', 'Art', 'Geography', 'History', 'Entertainment', 'Sports']}
+```JSON
+{
+  "categories": {
+    "1": "Science", 
+    "2": "Art", 
+    "3": "Geography", 
+    "4": "History", 
+    "5": "Entertainment", 
+    "6": "Sports"
+  }, 
+  "current_category": [
+    2, 
+    3, 
+    4, 
+    5, 
+    6
+  ], 
+  "questions": [
+    {
+      "answer": "Apollo 13", 
+      "category": 5, 
+      "difficulty": 4, 
+      "id": 2, 
+      "question": "What movie earned Tom Hanks his third straight Oscar nomination, in 1996?"
+    }, 
+    {...}
+  ], 
+  "status_code": 200, 
+  "status_message": "OK", 
+  "success": true, 
+  "total_questions": 17
+}
 ```
 
 #### `POST '/questions_by_phrase'`
@@ -213,24 +266,38 @@ Here is an example of the returned object:
     - `questions`: contains a list of the fetched questions. Each question is a key/value pairs object containing `id`,  `question`, `category` and  `diffficulty`.
     - `total_questions`: the number of questions returned.
     - `current_category`: list of the categories of the returned questions list.
-    - `categories`: the list of categories available in the database.
+    - `categories`: dictionary of categories available in the database.
 
 Here is an example of the returned object:
 
-```nix
-{'success': True,
-'status_code': 200,
-'status_message': 'OK',
-'questions': [{'id': 2,
-               'question': 'What movie earned Tom Hanks his third straight Oscar nomination, in 1996?',
-               'answer': 'Apollo 13',
-               'category': 5,
-               'difficulty': 4}, 
-               {...}...
-             ],
-'total_questions': 18,
-'current_category': [2, 3, 4, 5, 6],
-'categories': ['Science', 'Art', 'Geography', 'History', 'Entertainment', 'Sports']}
+```JSON
+{
+  "categories": {
+    "1": "Science", 
+    "2": "Art", 
+    "3": "Geography", 
+    "4": "History", 
+    "5": "Entertainment", 
+    "6": "Sports"
+  }, 
+  "current_category": [
+    5
+  ], 
+  "questions": [
+    {
+      "answer": "Tom Cruise", 
+      "category": 5, 
+      "difficulty": 4, 
+      "id": 4, 
+      "question": "What actor did author Anne Rice first denounce, then praise in the role of her beloved Lestat?"
+    }
+  ], 
+  "status_code": 200, 
+  "status_message": "OK", 
+  "success": true, 
+  "total_questions": 1
+}
+
 ```
 
 #### `GET '/categories/<int:category_id>/questions'`
@@ -244,23 +311,38 @@ Here is an example of the returned object:
     - `questions`: contains a list of the fetched questions. Each question is a key/value pairs object containing `id`,  `question`, `category` and  `diffficulty`.
     - `total_questions`: the number of questions returned.
     - `current_category`: list of the categories of the returned questions list.
-    - `categories`: the list of categories available in the database.
+    - `categories`: dictionary object containing the selected category.
 
 Here is an example of the returned object:
-```nix
-{'success': True,
-'status_code': 200,
-'status_message': 'OK',
-'questions': [{'id': 10,
-               'question': 'Which is the only team to play in every soccer World Cup tournament?',
-               'answer': 'Brazil',
-               'category': 6,
-               'difficulty': 3},
-               {...}, ...
-             ],
-'total_questions': 2,
-'current_category': [6],
-'categories': ['Sports']
+```JSON
+{
+  "categories": {
+    "1": "Science"
+  }, 
+  "current_category": [
+    1
+  ], 
+  "questions": [
+    {
+      "answer": "The Liver", 
+      "category": 1, 
+      "difficulty": 4, 
+      "id": 20, 
+      "question": "What is the heaviest organ in the human body?"
+    }, 
+    {
+      "answer": "It depends", 
+      "category": 1, 
+      "difficulty": 1, 
+      "id": 77, 
+      "question": "Can birds fly?"
+    },
+    {...}
+  ], 
+  "status_code": 200, 
+  "status_message": "OK", 
+  "success": true, 
+  "total_questions": 5
 }
 ```
 
@@ -277,17 +359,19 @@ Here is an example of the returned object:
     - `question`: contains the question. Question is a key/value pairs object containing `id`,  `question`, `answer`, `category` and  `diffficulty`.
 
 Here is an example of the returned object:
-```nix
-{'success': True,
-'status_code': 200,
-'status_message': 'OK',
-'question': {'id': 11,
-             'question': 'Which country won the first ever soccer World Cup in 1930?',
-             'answer': 'Uruguay',
-             'category': 6,
-             'difficulty': 4}
+```JSON
+{
+  "question": {
+    "answer": "Alexander Fleming", 
+    "category": 1, 
+    "difficulty": 3, 
+    "id": 21, 
+    "question": "Who discovered penicillin?"
+  }, 
+  "status_code": 200, 
+  "status_message": "OK", 
+  "success": true
 }
-
 ```
 
 ## Errors handling:
@@ -298,10 +382,12 @@ All endpoints are provided with error handlers functions which return the follow
 
 Here is an example of the returned object:
 
-```nix
-"success": False,
-"error": 404,
-"message": "Resource Not found"
+```JSON
+{
+    "success": False,
+    "error": 404,
+    "message": "Resource Not found"
+}
 ```
 
 ## Testing

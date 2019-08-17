@@ -39,11 +39,11 @@ def create_app(test_config=None):
     '''
     @app.after_request
     def after_request(response):
-        response.headers.add('Access-Control-Allow-Headers',
-                             'Content-Type,Authorization,true')
-        response.headers.add('Access-Control-Allow-Methods',
-                             'GET,PUT,POST,DELETE,OPTIONS')
-        response.headers.add('Access-Control-Allow-Credentials', 'true')
+        response.headers.add("Access-Control-Allow-Headers",
+                             "Content-Type,Authorization,true")
+        response.headers.add("Access-Control-Allow-Methods",
+                             "GET,PUT,POST,DELETE,OPTIONS")
+        response.headers.add("Access-Control-Allow-Credentials", "true")
         return response
 
     '''
@@ -55,30 +55,20 @@ def create_app(test_config=None):
     def retrieve_categories():
         try:
             categories = Category.query.order_by(Category.id).all()
-            categories_type = [category.type for category in categories]
-            categories_id = [category.id for category in categories]
-
-            if len(categories) == 0:
+            cat_items = [(
+                category.id, category.type) for category in categories]
+            if len(cat_items) == 0:
                 abort(404)
 
             else:
-                print({
-                    'success': True,
-                    'status_code': 200,
-                    'status_message': 'OK',
-                    'categories': categories_type,
-                    # 'categories_id': categories_id,
-                    'total_categories': len(categories)
+                return jsonify({
+                    "success": True,
+                    "status_code": 200,
+                    "status_message": 'OK',
+                    "categories": {key: value for (key, value) in cat_items},
+                    "total_categories": len(categories)
                 })
 
-                return jsonify({
-                    'success': True,
-                    'status_code': 200,
-                    'status_message': 'OK',
-                    'categories': categories_type,
-                    # 'categories_id': categories_id,
-                    'total_categories': len(categories)
-                })
         except Exception:
             abort(422)
 
@@ -100,23 +90,21 @@ def create_app(test_config=None):
         try:
             questions = Question.query.order_by(Question.id).all()
             current_questions = paginate_questions(request, questions)
-
             categories = Category.query.order_by(Category.id).all()
-            categories_type = [category.type for category in categories]
-            categories_id = [category.id for category in categories]
+            cat_items = [(
+                category.id, category.type) for category in categories]
 
             if len(current_questions) == 0:
                 abort(404)
 
             return jsonify({
-                'success': True,
-                'status_code': 200,
-                'status_message': 'OK',
-                'questions': current_questions,
-                'total_questions': len(questions),
-                'current_category': list(set([question['category'] for question in current_questions])),  # noqa
-                'categories': categories_type,
-                'categories_id': categories_id
+                "success": True,
+                "status_code": 200,
+                "status_message": 'OK',
+                "questions": current_questions,
+                "total_questions": len(questions),
+                "current_category": list(set([question['category'] for question in current_questions])),  # noqa
+                "categories": {key: value for (key, value) in cat_items}
             })
 
         except Exception:
@@ -144,12 +132,12 @@ def create_app(test_config=None):
                 current_questions = paginate_questions(request, questions)
 
             return jsonify({
-                'success': True,
-                'status_code': 200,
-                'status_message': 'OK',
-                'deleted': question_id,
-                'questions': current_questions,
-                'total_questions': len(questions)
+                "success": True,
+                "status_code": 200,
+                "status_message": 'OK',
+                "deleted": question_id,
+                "questions": current_questions,
+                "total_questions": len(questions)
             })
 
         except Exception:
@@ -168,7 +156,7 @@ def create_app(test_config=None):
     @app.route('/questions', methods=['POST'])
     def create_question():
         body = request.get_json()
-        print(body)
+
         if body:
             question = body.get('question')
             answer = body.get('answer')
@@ -196,19 +184,20 @@ def create_app(test_config=None):
                 current_questions = paginate_questions(request, questions)
 
                 categories = Category.query.order_by(Category.id).all()
-                categories = [category.type for category in categories]
+                cat_items = [(
+                    category.id, category.type) for category in categories]
 
                 if len(current_questions) == 0:
                     abort(404)
 
                 return jsonify({
-                    'success': True,
-                    'status_code': 200,
-                    'status_message': 'OK',
-                    'questions': current_questions,
-                    'total_questions': len(questions),
-                    'current_category': list(set([question['category'] for question in current_questions])),  # noqa
-                    'categories': categories
+                    "success": True,
+                    "status_code": 200,
+                    "status_message": "OK",
+                    "questions": current_questions,
+                    "total_questions": len(questions),
+                    "current_category": list(set([question['category'] for question in current_questions])),  # noqa
+                    "categories": {key: value for (key, value) in cat_items}
                 })
 
             except Exception:
@@ -238,19 +227,20 @@ def create_app(test_config=None):
             current_questions = paginate_questions(request, questions)
 
             categories = Category.query.order_by(Category.id).all()
-            categories = [category.type for category in categories]
+            cat_items = [(
+                category.id, category.type) for category in categories]
 
             if len(current_questions) == 0:
                 abort(404)
 
             return jsonify({
-                'success': True,
+                "success": True,
                 'status_code': 200,
-                'status_message': 'OK',
-                'questions': current_questions,
-                'total_questions': len(questions),
-                'current_category': list(set([question['category'] for question in current_questions])),  # noqa
-                'categories': categories
+                "status_message": "OK",
+                "questions": current_questions,
+                "total_questions": len(questions),
+                "current_category": list(set([question['category'] for question in current_questions])),  # noqa
+                "categories": {key: value for (key, value) in cat_items}
             })
 
         except Exception:
@@ -270,25 +260,24 @@ def create_app(test_config=None):
             questions = Question.query.filter(Question.category ==
                                               category_id).\
                                               order_by(Question.id).all()
-            #questions = Question.query.filter(Question.category == str(category_id)).order_by(Question.id).all()  # noqa
             current_questions = paginate_questions(request, questions)
 
             categories = Category.query.filter(Category.id == category_id).\
                 order_by(Category.id).all()
-            categories = [category.type for category in categories]
+            cat_items = [(
+                category.id, category.type) for category in categories]
 
             if len(current_questions) == 0:
                 abort(404)
 
             return jsonify({
-                'success': True,
-                'status_code': 200,
-                'status_message': 'OK',
-                'questions': current_questions,
-                'total_questions': len(questions),
-                'current_category': list(set([question['category'] for question in current_questions])),  # noqa
-                'categories': categories
-                # 'categories_id': categories_id
+                "success": True,
+                "status_code": 200,
+                "status_message": "OK",
+                "questions": current_questions,
+                "total_questions": len(questions),
+                "current_category": list(set([question['category'] for question in current_questions])),  # noqa
+                "categories": {key: value for (key, value) in cat_items}
             })
 
         except Exception:
@@ -310,11 +299,12 @@ def create_app(test_config=None):
         body = request.get_json()
         category = body.get('quiz_category').get('id')
         prev_question = body.get('previous_questions')
-        category = int(category) + 1
+        # category = int(category) + 1
 
-        questions = Question.query.filter(Question.category == str(category))\
+        questions = Question.query.filter(Question.category == category)\
                                   .all()
         questions = [question.format() for question in questions]
+
         if len(questions) == 0:
             abort(404)
         current_question = random.choice(questions)
@@ -324,10 +314,10 @@ def create_app(test_config=None):
             while keep_playing:
                 if current_question.get('id') not in prev_question:
                     return jsonify({
-                        'success': True,
-                        'status_code': 200,
-                        'status_message': 'OK',
-                        'question': current_question
+                        "success": True,
+                        "status_code": 200,
+                        "status_message": "OK",
+                        "question": current_question
                     })
                 else:
                     if len(questions) > len(prev_question):
@@ -336,10 +326,10 @@ def create_app(test_config=None):
                         keep_playing = False
 
             return jsonify({
-                'success': True,
-                'status_code': 200,
-                'status_message': 'OK',
-                'question': current_question
+                "success": True,
+                "status_code": 200,
+                "status_message": "OK",
+                "question": current_question
             })
 
         except Exception:

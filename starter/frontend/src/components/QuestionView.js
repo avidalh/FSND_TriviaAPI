@@ -127,7 +127,7 @@ class QuestionView extends Component {
           <ul>
             {Object.keys(this.state.categories).map((id, ) => (
               // here: <li key={id} onClick={() => {this.getByCategory((parseInt(id)+1))}}>
-              <li key={id} onClick={() => {this.getByCategory((parseInt(id)+1))}}>
+              <li key={id} onClick={() => {this.getByCategory((parseInt(id)))}}>
                 {this.state.categories[id]}
                 <img className="category" src={`${this.state.categories[id]}.svg`}/>
               </li>
@@ -143,7 +143,7 @@ class QuestionView extends Component {
               question={q.question}
               answer={q.answer}
               // here:ategory={this.state.categories[q.category-1]} 
-              category={this.state.categories[q.category-1]} 
+              category={this.state.categories[q.category]} 
               difficulty={q.difficulty}
               questionAction={this.questionAction(q.id)}
             />
