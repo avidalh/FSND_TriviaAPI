@@ -299,10 +299,14 @@ def create_app(test_config=None):
         body = request.get_json()
         category = body.get('quiz_category').get('id')
         prev_question = body.get('previous_questions')
-        # category = int(category) + 1
 
-        questions = Question.query.filter(Question.category == category)\
+        # play on all categories or an specific one:
+        if category != 0:
+            questions = Question.query.filter(Question.category == category)\
                                   .all()
+        else:
+            questions = Question.query.order_by(Question.id).all()
+
         questions = [question.format() for question in questions]
 
         if len(questions) == 0:
@@ -314,11 +318,11 @@ def create_app(test_config=None):
             while keep_playing:
                 if current_question.get('id') not in prev_question:
                     return jsonify({
-                        "success": True,
-                        "status_code": 200,
-                        "status_message": "OK",
-                        "question": current_question
-                    })
+                            "success": True,
+                            "status_code": 200,
+                            "status_message": "OK",
+                            "question": current_question
+                        })
                 else:
                     if len(questions) > len(prev_question):
                         current_question = random.choice(questions)
@@ -326,10 +330,10 @@ def create_app(test_config=None):
                         keep_playing = False
 
             return jsonify({
-                "success": True,
-                "status_code": 200,
-                "status_message": "OK",
-                "question": current_question
+                    "success": True,
+                    "status_code": 200,
+                    "status_message": "OK",
+                    "question": current_question
             })
 
         except Exception:
