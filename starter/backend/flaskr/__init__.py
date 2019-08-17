@@ -62,12 +62,21 @@ def create_app(test_config=None):
                 abort(404)
 
             else:
+                print({
+                    'success': True,
+                    'status_code': 200,
+                    'status_message': 'OK',
+                    'categories': categories_type,
+                    # 'categories_id': categories_id,
+                    'total_categories': len(categories)
+                })
+
                 return jsonify({
                     'success': True,
                     'status_code': 200,
                     'status_message': 'OK',
                     'categories': categories_type,
-                    'categories_id': categories_id,
+                    # 'categories_id': categories_id,
                     'total_categories': len(categories)
                 })
         except Exception:
@@ -159,7 +168,7 @@ def create_app(test_config=None):
     @app.route('/questions', methods=['POST'])
     def create_question():
         body = request.get_json()
-
+        print(body)
         if body:
             question = body.get('question')
             answer = body.get('answer')
@@ -258,16 +267,15 @@ def create_app(test_config=None):
     @app.route('/categories/<int:category_id>/questions')
     def questions_by_cat(category_id):
         try:
-            # questions = Question.query.filter(Question.category ==
-            #                                   category_id).\
-            #                                   order_by(Question.id).all()
-            questions = Question.query.filter(Question.category == str(category_id)).order_by(Question.id).all()  # noqa
+            questions = Question.query.filter(Question.category ==
+                                              category_id).\
+                                              order_by(Question.id).all()
+            #questions = Question.query.filter(Question.category == str(category_id)).order_by(Question.id).all()  # noqa
             current_questions = paginate_questions(request, questions)
 
             categories = Category.query.filter(Category.id == category_id).\
                 order_by(Category.id).all()
             categories = [category.type for category in categories]
-            # categories_id = [category.id for category in categories]
 
             if len(current_questions) == 0:
                 abort(404)
@@ -323,11 +331,7 @@ def create_app(test_config=None):
                     })
                 else:
                     if len(questions) > len(prev_question):
-                        # current_question = random.choice(questions)
-                        current_question = Question.query.filter(
-                            Question.category == str(category_id)).filter(
-                            ~Question.id.in_(previous_questions)).order_by(
-                            func.random()).first()
+                        current_question = random.choice(questions)
                     else:
                         keep_playing = False
 
